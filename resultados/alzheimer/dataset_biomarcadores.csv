@@ -1,0 +1,14 @@
+archivo,grupo,puntos_totales,secciones,longitud_total_um,bifurcaciones,terminales,strahler_max,ratio_bifurcacion_terminal
+SNc-071220-121B.CNG.swc,alzheimer,608,47,2600.02,18,29,3,0.621
+SNc-080225-123.CNG.swc,alzheimer,784,41,3770.16,18,23,3,0.783
+1a_5xFAD_DG_GC_9.CNG.swc,alzheimer,943,28,1776.08,13,15,3,0.867
+SNc-071214-118A.CNG.swc,alzheimer,529,20,1694.0,8,12,3,0.667
+SNc-071220-120.CNG.swc,alzheimer,861,33,3677.44,13,20,3,0.65
+SNc-071220-121A.CNG.swc,alzheimer,428,24,1313.87,9,15,1,0.6
+SNc-080226-127.CNG.swc,alzheimer,672,26,2126.61,8,18,3,0.444
+1a_5xFAD_DG_GC_11.CNG.swc,alzheimer,1014,35,1696.69,17,18,4,0.944
+SNc-080311-131.CNG.swc,alzheimer,1081,25,2546.48,11,14,2,0.786
+SNc-071214-118B.CNG.swc,alzheimer,610,11,2085.53,2,9,1,0.222
+SNc-080311-129.CNG.swc,alzheimer,626,20,2647.49,9,11,2,0.818
+SNc-080312-132.CNG.swc,alzheimer,512,18,2046.36,7,11,1,0.636
+SNc-080311-130.CNG.swc,alzheimer,646,25,3106.66,10,15,2,0.667

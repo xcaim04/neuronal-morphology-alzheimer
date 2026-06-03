@@ -1,0 +1,74 @@
+NEURONAL MORPHOLOGY ANALYSIS SOFTWARE - CUSTOM LICENSE
+Copyright (c) 2026 Carlos Javier Blanco Moreira
+
+All rights reserved.
+
+1. GRANT OF PERMISSION
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to use
+the Software for NON-COMMERCIAL, ACADEMIC, OR RESEARCH PURPOSES ONLY, 
+subject to the following conditions:
+
+- The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+- Any use of the Software must explicitly credit the original author:
+  Carlos Javier Blanco Moreira.
+- The Software shall not be used for commercial purposes without explicit
+  written permission from the author.
+
+2. MODIFICATION AND DISTRIBUTION
+
+You may modify the Software for your own use. However, you MAY NOT distribute 
+modified versions of the Software without explicit written permission from 
+the author. You MAY NOT distribute the original Software to third parties.
+
+3. RESTRICTED USES
+
+The following uses are EXPRESSLY FORBIDDEN without written permission from 
+the author:
+
+- Commercial use, including but not limited to:
+  * Integration into commercial products or services
+  * Use in a commercial environment for profit
+  * Sale, licensing, or rental of the Software
+- Medical or clinical diagnosis on human patients
+- Use in life-critical systems
+- Any application where failure of the Software could lead to injury, 
+  death, or severe physical or environmental damage
+
+4. DISCLAIMER OF WARRANTY
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+5. AUTHOR'S RIGHTS
+
+The author reserves the right to:
+- Grant or deny permission for any use not explicitly covered in this license
+- Revoke permission for ANY use at any time, for any reason
+- Modify the terms of this license for any future version of the Software
+
+6. ACKNOWLEDGMENT
+
+Any publication, presentation, or derivative work using this Software MUST 
+include the following citation:
+
+"Neuronal Morphology Analysis Tool - developed by Carlos Javier Blanco Moreira"
+
+7. GOVERNING LAW
+
+This license shall be governed by and construed in accordance with the laws 
+of Spain, without regard to its conflict of law provisions.
+
+8. CONTACT
+
+For permission requests, commercial licensing, or any questions regarding 
+this license, contact: [carlosjavierblancomoreira@gmail.com]
+
+--- END OF LICENSE ---

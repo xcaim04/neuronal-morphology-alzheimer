@@ -1,0 +1,8 @@
+archivo,grupo,puntos_totales,secciones,longitud_total_um,bifurcaciones,terminales,strahler_max,ratio_bifurcacion_terminal
+control-8-wt.CNG.swc,sana,1210,129,3764.81,62,67,2,0.925
+control-20-wt.CNG.swc,sana,874,73,2637.02,33,40,3,0.825
+control-19-wt.CNG.swc,sana,1351,142,4017.44,68,74,2,0.919
+control-9-wt.CNG.swc,sana,1402,103,3278.59,48,55,2,0.873
+control-15-wt.CNG.swc,sana,2134,151,5416.03,73,78,1,0.936
+control-5-wt.CNG.swc,sana,1161,115,3555.3,55,60,3,0.917
+control-12-wt.CNG.swc,sana,721,64,1968.79,29,35,2,0.829
