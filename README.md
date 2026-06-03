@@ -333,6 +333,4 @@ joblib>=1.3.0
 ```
 
 
----
-
-## Project timeline
+> Milestone 2: Dataset structure and preprocessing plan
