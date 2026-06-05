@@ -8,3 +8,6 @@
 
 ## 2026-06-05
 - SWC parser and neuron data model
+
+## 2026-06-05
+- Add morphology geometry utilities

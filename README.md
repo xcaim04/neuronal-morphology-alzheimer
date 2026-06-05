@@ -333,4 +333,4 @@ joblib>=1.3.0
 ```
 
 
-> Milestone 3: SWC parser and neuron data model
+> Milestone 4: Add morphology geometry utilities
