@@ -333,4 +333,4 @@ joblib>=1.3.0
 ```
 
 
-> Milestone 2: Dataset structure and preprocessing plan
+> Milestone 3: SWC parser and neuron data model

@@ -5,3 +5,6 @@
 
 ## 2026-06-03
 - Dataset structure and preprocessing plan
+
+## 2026-06-05
+- SWC parser and neuron data model
