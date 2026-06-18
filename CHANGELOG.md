@@ -14,3 +14,6 @@
 
 ## 2026-06-18
 - Prototype biomarker extraction pipeline
+
+## 2026-06-18
+- Validate healthy vs Alzheimer features

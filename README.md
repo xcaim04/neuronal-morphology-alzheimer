@@ -333,4 +333,4 @@ joblib>=1.3.0
 ```
 
 
-> Milestone 5: Prototype biomarker extraction pipeline
+> Milestone 6: Validate healthy vs Alzheimer features
