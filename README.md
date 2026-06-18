@@ -333,4 +333,4 @@ joblib>=1.3.0
 ```
 
 
-> Milestone 4: Add morphology geometry utilities
+> Milestone 5: Prototype biomarker extraction pipeline
