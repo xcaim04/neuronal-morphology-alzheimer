@@ -20,3 +20,6 @@
 
 ## 2026-07-02
 - Train first classification baseline
+
+## 2026-07-02
+- Refine model evaluation metrics

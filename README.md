@@ -333,4 +333,4 @@ joblib>=1.3.0
 ```
 
 
-> Milestone 7: Train first classification baseline
+> Milestone 8: Refine model evaluation metrics
