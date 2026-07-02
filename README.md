@@ -333,4 +333,4 @@ joblib>=1.3.0
 ```
 
 
-> Milestone 6: Validate healthy vs Alzheimer features
+> Milestone 7: Train first classification baseline

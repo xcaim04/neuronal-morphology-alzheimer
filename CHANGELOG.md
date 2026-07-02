@@ -17,3 +17,6 @@
 
 ## 2026-06-18
 - Validate healthy vs Alzheimer features
+
+## 2026-07-02
+- Train first classification baseline
