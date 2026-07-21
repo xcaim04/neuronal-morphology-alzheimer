@@ -333,4 +333,4 @@ joblib>=1.3.0
 ```
 
 
-> Milestone 9: Prepare comparative study reports
+> Milestone 10: Improve visualization outputs

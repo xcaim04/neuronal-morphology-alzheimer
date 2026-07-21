@@ -26,3 +26,6 @@
 
 ## 2026-07-21
 - Prepare comparative study reports
+
+## 2026-07-21
+- Improve visualization outputs
