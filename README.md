@@ -333,4 +333,4 @@ joblib>=1.3.0
 ```
 
 
-> Milestone 8: Refine model evaluation metrics
+> Milestone 9: Prepare comparative study reports
