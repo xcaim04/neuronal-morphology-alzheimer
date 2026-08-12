@@ -333,4 +333,4 @@ joblib>=1.3.0
 ```
 
 
-> Milestone 11: Stabilize model persistence workflow
+> Milestone 12: Add prediction pipeline for new samples

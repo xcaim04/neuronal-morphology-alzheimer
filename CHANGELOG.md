@@ -32,3 +32,6 @@
 
 ## 2026-08-12
 - Stabilize model persistence workflow
+
+## 2026-08-12
+- Add prediction pipeline for new samples
