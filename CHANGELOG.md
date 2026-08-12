@@ -29,3 +29,6 @@
 
 ## 2026-07-21
 - Improve visualization outputs
+
+## 2026-08-12
+- Stabilize model persistence workflow
