@@ -35,3 +35,6 @@
 
 ## 2026-08-12
 - Add prediction pipeline for new samples
+
+## 2026-09-01
+- Compare performance across groups

@@ -333,4 +333,4 @@ joblib>=1.3.0
 ```
 
 
-> Milestone 12: Add prediction pipeline for new samples
+> Milestone 13: Compare performance across groups
