@@ -38,3 +38,6 @@
 
 ## 2026-09-01
 - Compare performance across groups
+
+## 2026-09-01
+- Document biomarker definitions
