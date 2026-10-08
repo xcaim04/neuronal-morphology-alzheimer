@@ -333,4 +333,4 @@ joblib>=1.3.0
 ```
 
 
-> Milestone 16: Refine training and report generation
+> Milestone 17: Finalize dataset handling and validations

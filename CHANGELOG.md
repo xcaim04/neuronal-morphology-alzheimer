@@ -47,3 +47,6 @@
 
 ## 2026-09-23
 - Refine training and report generation
+
+## 2026-10-08
+- Finalize dataset handling and validations
