@@ -50,3 +50,6 @@
 
 ## 2026-10-08
 - Finalize dataset handling and validations
+
+## 2026-10-08
+- Improve reproducibility and documentation

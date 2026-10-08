@@ -333,4 +333,4 @@ joblib>=1.3.0
 ```
 
 
-> Milestone 17: Finalize dataset handling and validations
+> Milestone 18: Improve reproducibility and documentation
