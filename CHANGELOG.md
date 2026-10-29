@@ -56,3 +56,6 @@
 
 ## 2026-10-29
 - Prepare final reproducible release notes
+
+## 2026-10-29
+- Release candidate for morphology analysis

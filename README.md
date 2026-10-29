@@ -333,4 +333,4 @@ joblib>=1.3.0
 ```
 
 
-> Milestone 19: Prepare final reproducible release notes
+> Milestone 20: Release candidate for morphology analysis
