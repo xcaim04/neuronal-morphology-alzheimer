@@ -53,3 +53,6 @@
 
 ## 2026-10-08
 - Improve reproducibility and documentation
+
+## 2026-10-29
+- Prepare final reproducible release notes

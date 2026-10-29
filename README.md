@@ -333,4 +333,4 @@ joblib>=1.3.0
 ```
 
 
-> Milestone 18: Improve reproducibility and documentation
+> Milestone 19: Prepare final reproducible release notes
