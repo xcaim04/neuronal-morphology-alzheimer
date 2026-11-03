@@ -333,4 +333,4 @@ joblib>=1.3.0
 ```
 
 
-> Milestone 20: Release candidate for morphology analysis
+> Milestone 21: Finalize project status and reporting
