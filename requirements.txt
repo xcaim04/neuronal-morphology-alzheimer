@@ -1,0 +1,10 @@
+# Requerimientos del proyecto de morfología neuronal
+# Python >= 3.12
+
+numpy>=1.26
+pandas>=2.0.2
+matplotlib>=3.10.9
+seaborn>=0.13.2
+morphio>=3.4.2
+scikit-learn>=1.5
+joblib>=1.4
