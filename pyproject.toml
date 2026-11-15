@@ -1,12 +1,15 @@
 [project]
 name = "neurona"
 version = "0.1.0"
-description = "Add your description here"
+description = "Pipeline de analisis morfologico neuronal y clasificacion sana vs Alzheimer"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "joblib>=1.4",
     "matplotlib>=3.10.9",
     "morphio>=3.4.2",
-    "pandas>=3.0.2",
+    "numpy>=1.26",
+    "pandas>=2.0.2",
+    "scikit-learn>=1.5",
     "seaborn>=0.13.2",
 ]
