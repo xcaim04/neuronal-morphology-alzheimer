@@ -1,102 +1,104 @@
-# Neuronal Morphology Analysis for Alzheimer's Disease
+# Análisis de morfología neuronal para la enfermedad de Alzheimer
+
+[English](README.en.md) · **Español**
 
 [![Python Version](https://img.shields.io/badge/python-3.12+-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-Custom-red.svg)](License)
 [![Morphio](https://img.shields.io/badge/morphio-3.4.2+-green.svg)](https://github.com/BlueBrain/morphio)
 
-A pipeline for extracting dendritic biomarkers from neuronal reconstructions (SWC) and comparing healthy vs. Alzheimer-model neurons, with statistical tests and a Random Forest classifier.
+Un pipeline para extraer biomarcadores dendríticos de reconstrucciones neuronales (SWC) y comparar neuronas sanas con neuronas de un modelo de Alzheimer, con pruebas estadísticas y un clasificador Random Forest.
 
-> **Main result (negative):** on a dataset of comparable groups (31 control vs. 31 APP/PS1 CA1 pyramidal neurons from the same study), **no biomarker differs significantly** between groups and **the classifier performs at chance level**. See [Results](#-results).
+> **Resultado principal (negativo):** en un conjunto de datos con grupos comparables (31 neuronas piramidales de CA1 control frente a 31 APP/PS1 del mismo estudio), **ningún biomarcador difiere significativamente** entre grupos y **el clasificador rinde al nivel del azar**. Véase [Resultados](#-resultados).
 
-## 📋 Table of Contents
+## 📋 Índice
 
-- [Overview](#-overview)
-- [Features](#-features)
-- [Project Structure](#-project-structure)
-- [Installation](#-installation)
-- [Dataset](#-dataset)
-- [Usage](#-usage)
-- [Biomarkers](#-biomarkers-extracted)
-- [Machine Learning](#-machine-learning)
-- [Results](#-results)
-- [Limitations](#️-limitations)
-- [License](#-license)
-- [Author](#-author)
+- [Descripción general](#-descripción-general)
+- [Características](#-características)
+- [Estructura del proyecto](#-estructura-del-proyecto)
+- [Instalación](#-instalación)
+- [Conjunto de datos](#-conjunto-de-datos)
+- [Uso](#-uso)
+- [Biomarcadores](#-biomarcadores-extraídos)
+- [Aprendizaje automático](#-aprendizaje-automático)
+- [Resultados](#-resultados)
+- [Limitaciones](#️-limitaciones)
+- [Licencia](#-licencia)
+- [Autor](#-autor)
 
-## 🧠 Overview
+## 🧠 Descripción general
 
-This project implements a pipeline to:
+Este proyecto implementa un pipeline para:
 
-1. **Extract morphological biomarkers** from the dendrites of neuronal reconstructions (SWC format)
-2. **Compare groups statistically** (Mann-Whitney U, Holm correction, Cliff's delta)
-3. **Evaluate a Random Forest classifier** with repeated stratified cross-validation against a dummy baseline
-4. **Store and visualize results** in a local SQLite database, static reports and a Streamlit dashboard
+1. **Extraer biomarcadores morfológicos** de las dendritas de reconstrucciones neuronales (formato SWC)
+2. **Comparar los grupos estadísticamente** (U de Mann-Whitney, corrección de Holm, delta de Cliff)
+3. **Evaluar un clasificador Random Forest** con validación cruzada estratificada repetida frente a una línea base trivial
+4. **Almacenar y visualizar los resultados** en una base de datos SQLite local, informes estáticos y un panel de Streamlit
 
-It is a research/teaching tool. With the current dataset it is an analysis pipeline that reports a negative result, not a working classifier.
+Es una herramienta de investigación y docencia. Con el conjunto de datos actual es un pipeline de análisis que informa de un resultado negativo, no un clasificador funcional.
 
-## ✨ Features
+## ✨ Características
 
-| Feature | Description |
+| Característica | Descripción |
 |---------|-------------|
-| **SWC Parsing** | Load neuronal morphologies with `morphio` |
-| **Biomarker Extraction** | 7 dendritic biomarkers per neuron (SWC types 3 and 4 only) |
-| **Reproducible Dataset** | `scripts/descargar_dataset.py` downloads the data and writes `dataset/manifest.csv` with provenance |
-| **Statistical Comparison** | Mann-Whitney U, Holm-Bonferroni correction, Cliff's delta, auto-generated interpretation and limitations |
-| **ML Evaluation** | Random Forest, repeated stratified 5-fold CV (10 repeats), `DummyClassifier` baseline, out-of-fold confusion matrix and ROC |
-| **Persistence** | Biomarkers and training runs stored in SQLite (`data/neurona.sqlite3`) |
-| **Dashboard** | Streamlit app with Biomarcadores / Comparativa / Modelo tabs (prediction is CLI-only) |
-| **Tests** | `pytest` suite under `tests/` |
+| **Lectura de SWC** | Carga de morfologías neuronales con `morphio` |
+| **Extracción de biomarcadores** | 7 biomarcadores dendríticos por neurona (solo tipos SWC 3 y 4) |
+| **Conjunto de datos reproducible** | `scripts/descargar_dataset.py` descarga los datos y escribe `dataset/manifest.csv` con su procedencia |
+| **Comparación estadística** | U de Mann-Whitney, corrección de Holm-Bonferroni, delta de Cliff, interpretación y limitaciones generadas automáticamente |
+| **Evaluación de ML** | Random Forest, validación cruzada estratificada de 5 particiones repetida (10 repeticiones), línea base `DummyClassifier`, matriz de confusión y curva ROC fuera de partición (out-of-fold) |
+| **Persistencia** | Biomarcadores y ejecuciones de entrenamiento almacenados en SQLite (`data/neurona.sqlite3`) |
+| **Panel** | Aplicación de Streamlit con las pestañas Biomarcadores / Comparativa / Modelo (la predicción solo está disponible por línea de comandos) |
+| **Pruebas** | Batería de `pytest` en `tests/` |
 
-## 📁 Project Structure
+## 📁 Estructura del proyecto
 
 ```
 neuronal-morphology-alzheimer/
 ├── dataset/
-│   ├── sanas/                  # Control neurons (label 0)
-│   ├── enfermas/               # APP/PS1 neurons (label 1)
-│   └── manifest.csv            # Provenance of every SWC file
+│   ├── sanas/                  # Neuronas control (etiqueta 0)
+│   ├── enfermas/               # Neuronas APP/PS1 (etiqueta 1)
+│   └── manifest.csv            # Procedencia de cada archivo SWC
 ├── scripts/
-│   └── descargar_dataset.py    # Downloads the dataset from NeuroMorpho.org
+│   └── descargar_dataset.py    # Descarga el conjunto de datos de NeuroMorpho.org
 ├── src/
 │   ├── classification/
-│   │   ├── classifier.py       # Random Forest wrapper
-│   │   └── evaluator.py        # Repeated CV, confusion matrix, ROC, JSON report
+│   │   ├── classifier.py       # Envoltorio de Random Forest
+│   │   └── evaluator.py        # CV repetida, matriz de confusión, ROC, informe JSON
 │   ├── models/
-│   │   └── neuron.py           # Neuron class: biomarkers and Strahler order
+│   │   └── neuron.py           # Clase Neuron: biomarcadores y orden de Strahler
 │   ├── processing/
-│   │   ├── analyzer.py         # Batch biomarker extraction
-│   │   └── storage.py          # SQLite persistence
+│   │   ├── analyzer.py         # Extracción de biomarcadores por lotes
+│   │   └── storage.py          # Persistencia en SQLite
 │   ├── visualization/
-│   │   └── plots.py            # Bar charts, scatter plot, Strahler boxplot
+│   │   └── plots.py            # Gráficos de barras, dispersión, diagrama de cajas de Strahler
 │   └── utils/
-│       └── geometry.py         # Euclidean distance / section length
-├── tests/                      # pytest suite
-├── resultados/                 # Generated outputs
+│       └── geometry.py         # Distancia euclídea / longitud de sección
+├── tests/                      # Batería de pytest
+├── resultados/                 # Salidas generadas
 │   ├── sanas/
 │   ├── alzheimer/
 │   ├── comparativa/
 │   └── evaluacion/
 ├── modelos/
 │   └── clasificador_neurona.pkl
-├── data/                       # SQLite database (generated, git-ignored)
-├── app.py                      # Streamlit dashboard
-├── config.py                   # Paths and constants
-├── main.py                     # Biomarker extraction + reports
-├── train.py                    # Classifier evaluation and training
-├── predecir.py                 # Prediction from CSV
-├── datos_a_predecir.csv        # Example input for predecir.py
+├── data/                       # Base de datos SQLite (generada, ignorada por git)
+├── app.py                      # Panel de Streamlit
+├── config.py                   # Rutas y constantes
+├── main.py                     # Extracción de biomarcadores + informes
+├── train.py                    # Evaluación y entrenamiento del clasificador
+├── predecir.py                 # Predicción a partir de un CSV
+├── datos_a_predecir.csv        # Entrada de ejemplo para predecir.py
 ├── pyproject.toml
 └── requirements.txt
 ```
 
-## 🔧 Installation
+## 🔧 Instalación
 
-### Prerequisites
+### Requisitos previos
 
-- Python 3.12 or higher
-- [`uv`](https://docs.astral.sh/uv/) package manager (recommended)
+- Python 3.12 o superior
+- Gestor de paquetes [`uv`](https://docs.astral.sh/uv/) (recomendado)
 
-### Steps
+### Pasos
 
 ```bash
 git clone https://github.com/xcaim04/neuronal-morphology-alzheimer.git
@@ -104,41 +106,41 @@ cd neuronal-morphology-alzheimer
 uv sync
 ```
 
-`uv sync` creates the virtual environment and installs the dependencies from `pyproject.toml` / `uv.lock` (including the `dev` group with `pytest`).
+`uv sync` crea el entorno virtual e instala las dependencias de `pyproject.toml` / `uv.lock` (incluido el grupo `dev` con `pytest`).
 
-Without `uv`:
+Sin `uv`:
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+source .venv/bin/activate  # En Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-## 📂 Dataset
+## 📂 Conjunto de datos
 
-The dataset contains **31 control vs. 31 Alzheimer-model neurons**, all from the **Booker archive** of [NeuroMorpho.org](https://neuromorpho.org) (PMID 41651661, doi [10.1523/ENEURO.0099-23.2025](https://doi.org/10.1523/ENEURO.0099-23.2025)):
+El conjunto de datos contiene **31 neuronas control frente a 31 de un modelo de Alzheimer**, todas del **archivo Booker** de [NeuroMorpho.org](https://neuromorpho.org) (PMID 41651661, doi [10.1523/ENEURO.0099-23.2025](https://doi.org/10.1523/ENEURO.0099-23.2025)):
 
 | | Control (`dataset/sanas/`) | Alzheimer (`dataset/enfermas/`) |
 |---|---|---|
-| Species | Mouse | Mouse |
-| Strain | C57BL/6J | APP/PS1 transgenic |
-| Region / cell type | CA1, stratum pyramidale / pyramidal | CA1, stratum pyramidale / pyramidal |
-| Age 6 months | 13 | 13 |
-| Age 12 months | 18 | 18 |
+| Especie | Ratón | Ratón |
+| Cepa | C57BL/6J | Transgénico APP/PS1 |
+| Región / tipo celular | CA1, stratum pyramidale / piramidal | CA1, stratum pyramidale / piramidal |
+| Edad 6 meses | 13 | 13 |
+| Edad 12 meses | 18 | 18 |
 
-Selection (see the docstring of `scripts/descargar_dataset.py`): only `_Merged` reconstructions (full dendritic tree), only 6- and 12-month animals, and files that `morphio` cannot open are discarded.
+Selección (véase el docstring de `scripts/descargar_dataset.py`): solo reconstrucciones `_Merged` (árbol dendrítico completo), solo animales de 6 y 12 meses, y se descartan los archivos que `morphio` no puede abrir.
 
-`dataset/manifest.csv` records the provenance of each file (species, strain, region, cell type, age, condition, URL). To reproduce the dataset:
+`dataset/manifest.csv` registra la procedencia de cada archivo (especie, cepa, región, tipo celular, edad, condición, URL). Para reproducir el conjunto de datos:
 
 ```bash
 uv run python scripts/descargar_dataset.py
 ```
 
-The previous dataset (20 files: rat substantia nigra neurons, 5xFAD dentate gyrus granule cells and controls from another lab) was removed because the groups were not comparable.
+El conjunto de datos anterior (20 archivos: neuronas de la sustancia negra de rata, células granulares del giro dentado de 5xFAD y controles de otro laboratorio) se eliminó porque los grupos no eran comparables.
 
-### SWC file format
+### Formato de archivo SWC
 
-The SWC format contains 7 columns per line:
+El formato SWC contiene 7 columnas por línea:
 
 ```
 ID  Type    X       Y       Z       Radius  Parent
@@ -147,67 +149,67 @@ ID  Type    X       Y       Z       Radius  Parent
 ...
 ```
 
-| Column | Description |
+| Columna | Descripción |
 |--------|-------------|
-| ID | Unique point identifier |
-| Type | 1=soma, 2=axon, 3=basal dendrite, 4=apical dendrite |
-| X, Y, Z | Coordinates in micrometers |
-| Radius | Diameter/2 in micrometers |
-| Parent | ID of parent point (-1 for root) |
+| ID | Identificador único del punto |
+| Type | 1=soma, 2=axón, 3=dendrita basal, 4=dendrita apical |
+| X, Y, Z | Coordenadas en micrómetros |
+| Radius | Diámetro/2 en micrómetros |
+| Parent | ID del punto padre (-1 para la raíz) |
 
-## 🚀 Usage
+## 🚀 Uso
 
-### 1. Extract biomarkers and generate reports
+### 1. Extraer biomarcadores y generar informes
 
 ```bash
 uv run python main.py
 ```
 
-Processes `dataset/sanas/` and `dataset/enfermas/` and stores the biomarkers in `data/neurona.sqlite3`.
+Procesa `dataset/sanas/` y `dataset/enfermas/` y almacena los biomarcadores en `data/neurona.sqlite3`.
 
-**Output** (in `resultados/`):
-- `sanas/` and `alzheimer/`: `dataset_biomarcadores.csv`, `informe.md` (with provenance from the manifest), `bifurcaciones_vs_longitud.png`, `strahler_boxplot.png`
-- `comparativa/`: `informe_comparativo.md` (statistical tests, interpretation, limitations), `comparacion_<biomarker>.png`, `bifurcaciones_vs_longitud.png`, `strahler_boxplot.png`
+**Salida** (en `resultados/`):
+- `sanas/` y `alzheimer/`: `dataset_biomarcadores.csv`, `informe.md` (con la procedencia tomada del manifiesto), `bifurcaciones_vs_longitud.png`, `strahler_boxplot.png`
+- `comparativa/`: `informe_comparativo.md` (pruebas estadísticas, interpretación, limitaciones), `comparacion_<biomarker>.png`, `bifurcaciones_vs_longitud.png`, `strahler_boxplot.png`
 
-### 2. Evaluate and train the classifier
+### 2. Evaluar y entrenar el clasificador
 
-Requires the CSVs produced by `main.py`.
+Requiere los CSV generados por `main.py`.
 
 ```bash
 uv run python train.py
 ```
 
-**Output** (in `modelos/` and `resultados/evaluacion/`):
-- `clasificador_neurona.pkl` - Random Forest trained on all data
-- `metricas_RandomForest.csv` - CV metrics (columns `metrica,mean,std`)
-- `informe_evaluacion.json` - CV metrics for the model and the baseline, class counts, hyperparameters, features
-- `importancia_caracteristicas.csv` - Feature importances
-- `matriz_confusion_RandomForest.png`, `curva_roc_RandomForest.png` - Out-of-fold confusion matrix and ROC curve
+**Salida** (en `modelos/` y `resultados/evaluacion/`):
+- `clasificador_neurona.pkl` - Random Forest entrenado con todos los datos
+- `metricas_RandomForest.csv` - Métricas de validación cruzada (columnas `metrica,mean,std`)
+- `informe_evaluacion.json` - Métricas de validación cruzada del modelo y de la línea base, recuento por clase, hiperparámetros, características
+- `importancia_caracteristicas.csv` - Importancia de las características
+- `matriz_confusion_RandomForest.png`, `curva_roc_RandomForest.png` - Matriz de confusión y curva ROC fuera de partición
 
-The training run is also stored in `data/neurona.sqlite3`.
+La ejecución del entrenamiento también se almacena en `data/neurona.sqlite3`.
 
-### 3. Dashboard
+### 3. Panel
 
 ```bash
 uv run streamlit run app.py
 ```
 
-Reads the SQLite database and the files in `resultados/`; run `main.py` and `train.py` first.
+Lee la base de datos SQLite y los archivos de `resultados/`; ejecute antes `main.py` y `train.py`.
 
-![Biomarcadores tab: per-group summary metrics, box plot of the selected biomarker by group, scatter of bifurcations vs total length, and the per-neuron table](docs/img/panel_biomarcadores.png)
-*Biomarcadores: per-group summary, distribution of the selected biomarker and the per-neuron table.*
+![Pestaña Biomarcadores: métricas resumen por grupo, diagrama de cajas del biomarcador seleccionado por grupo, dispersión de bifurcaciones frente a longitud total y la tabla por neurona](docs/img/panel_biomarcadores.png)
+*Biomarcadores: resumen por grupo, distribución del biomarcador seleccionado y la tabla por neurona.*
 
-![Comparativa tab: group comparison report with Mann-Whitney U tests, Holm-adjusted p-values and Cliff's delta for each metric](docs/img/panel_comparativa.png)
-*Comparativa: the group comparison report (Mann-Whitney U, Holm correction, Cliff's delta).*
+![Pestaña Comparativa: informe de comparación entre grupos con pruebas U de Mann-Whitney, valores p ajustados por Holm y delta de Cliff para cada métrica](docs/img/panel_comparativa.png)
+*Comparativa: el informe de comparación entre grupos (U de Mann-Whitney, corrección de Holm, delta de Cliff).*
 
-![Modelo tab: warning that the model does not beat chance, cross-validated metrics vs baseline, feature importances, confusion matrix and ROC curve](docs/img/panel_modelo.png)
-*Modelo: cross-validated metrics against the baseline, with a warning when the model is at chance level.*
+![Pestaña Modelo: aviso de que el modelo no supera al azar, métricas de validación cruzada frente a la línea base, importancia de las características, matriz de confusión y curva ROC](docs/img/panel_modelo.png)
+*Modelo: métricas de validación cruzada frente a la línea base, con un aviso cuando el modelo está al nivel del azar.*
 
-### 4. Predict new neurons from CSV
+### 4. Predecir nuevas neuronas a partir de un CSV
 
-> ⚠️ With the current model, predictions have **no value**: cross-validated performance is at chance level (see [Results](#-results)). Prediction is therefore not offered in the dashboard; `predecir.py` prints a warning to stderr while the evaluation report shows the model at chance level (mean CV AUC minus its std ≤ 0.5).
+> ⚠️ Con el modelo actual, las predicciones **no tienen valor**: el rendimiento en validación cruzada está al nivel del azar (véase [Resultados](#-resultados)). Por eso la predicción no se ofrece en el panel; `predecir.py` muestra un aviso por stderr mientras el informe de evaluación indique que el modelo está al nivel del azar (AUC media de validación cruzada menos su desviación típica ≤ 0,5).
 
-Create a CSV file with the following columns:
+Cree un archivo CSV con las siguientes columnas:
 
 ```csv
 longitud_total_um,bifurcaciones,terminales,strahler_max
@@ -216,13 +218,13 @@ longitud_total_um,bifurcaciones,terminales,strahler_max
 2800,30,35,2
 ```
 
-Then run:
+A continuación, ejecute:
 
 ```bash
 uv run python predecir.py datos_a_predecir.csv -s resultados.csv
 ```
 
-**Or from Python:**
+**O desde Python:**
 
 ```python
 from predecir import predecir_desde_csv
@@ -231,60 +233,60 @@ df_resultado = predecir_desde_csv("datos.csv", "predicciones.csv")
 print(df_resultado[["prediccion", "confianza_porcentaje"]])
 ```
 
-### 5. Tests
+### 5. Pruebas
 
 ```bash
 uv run pytest
 ```
 
-## 📊 Biomarkers Extracted
+## 📊 Biomarcadores extraídos
 
-All biomarkers are computed over dendritic sections only (SWC types 3 and 4); axons are ignored.
+Todos los biomarcadores se calculan solo sobre las secciones dendríticas (tipos SWC 3 y 4); los axones se ignoran.
 
-| Biomarker | Column | Calculation |
+| Biomarcador | Columna | Cálculo |
 |-----------|--------|-------------|
-| **Total Length** | `longitud_total_um` | Sum of Euclidean distances between consecutive points of each section |
-| **Bifurcations** | `bifurcaciones` | Sections with ≥2 children |
-| **Terminals** | `terminales` | Sections with 0 children |
-| **Strahler Order** | `strahler_max` | Maximum over all dendritic root sections |
-| **Sections** | `secciones` | Number of dendritic sections |
-| **Points** | `puntos_totales` | Number of points in dendritic sections |
-| **Bif/Term Ratio** | `ratio_bifurcacion_terminal` | Bifurcations / Terminals |
+| **Longitud total** | `longitud_total_um` | Suma de las distancias euclídeas entre puntos consecutivos de cada sección |
+| **Bifurcaciones** | `bifurcaciones` | Secciones con ≥2 hijas |
+| **Terminales** | `terminales` | Secciones con 0 hijas |
+| **Orden de Strahler** | `strahler_max` | Máximo sobre todas las secciones raíz dendríticas |
+| **Secciones** | `secciones` | Número de secciones dendríticas |
+| **Puntos** | `puntos_totales` | Número de puntos en las secciones dendríticas |
+| **Razón bif./term.** | `ratio_bifurcacion_terminal` | Bifurcaciones / Terminales |
 
-### Strahler Order Rules
+### Reglas del orden de Strahler
 
 ```
-If node has no children:                    Order = 1
-If ≥2 children share the maximum order:     Order = max + 1
-Otherwise:                                  Order = max(child_orders)
+Si el nodo no tiene hijos:                       Orden = 1
+Si ≥2 hijos comparten el orden máximo:           Orden = máx + 1
+En otro caso:                                    Orden = máx(órdenes_hijos)
 ```
 
-## 🤖 Machine Learning
+## 🤖 Aprendizaje automático
 
-### Algorithm: Random Forest
+### Algoritmo: Random Forest
 
-| Parameter | Value |
+| Parámetro | Valor |
 |-----------|-------|
 | `n_estimators` | 100 |
 | `max_depth` | 4 |
 | `random_state` | 42 |
 
-Features: `longitud_total_um`, `bifurcaciones`, `terminales`, `strahler_max`.
+Características: `longitud_total_um`, `bifurcaciones`, `terminales`, `strahler_max`.
 
-### Evaluation
+### Evaluación
 
-- **Repeated stratified k-fold CV**: 5 folds x 10 repeats; mean ± std over the 50 folds of accuracy, precision, recall, F1 and ROC AUC
-- **Baseline**: `DummyClassifier(strategy="most_frequent")` evaluated with the same CV
-- **Confusion matrix and ROC curve**: out-of-fold predictions from a single stratified 5-fold split
-- The final model is then trained on all data and saved to `modelos/`
+- **Validación cruzada k-fold estratificada repetida**: 5 particiones x 10 repeticiones; media ± desviación típica sobre las 50 particiones de exactitud (accuracy), precisión, sensibilidad (recall), F1 y AUC ROC
+- **Línea base**: `DummyClassifier(strategy="most_frequent")` evaluado con la misma validación cruzada
+- **Matriz de confusión y curva ROC**: predicciones fuera de partición de una única división estratificada en 5 particiones
+- Después, el modelo final se entrena con todos los datos y se guarda en `modelos/`
 
-## 📈 Results
+## 📈 Resultados
 
-### Group comparison (`resultados/comparativa/informe_comparativo.md`)
+### Comparación entre grupos (`resultados/comparativa/informe_comparativo.md`)
 
-Two-sided Mann-Whitney U per biomarker, Holm-Bonferroni correction over the 7 biomarkers (α = 0.05). Difference = (Alzheimer − control) / control.
+Prueba U de Mann-Whitney bilateral por biomarcador, corrección de Holm-Bonferroni sobre los 7 biomarcadores (α = 0,05). Diferencia = (Alzheimer − control) / control.
 
-| Biomarker | Control (mean ± std) | Alzheimer (mean ± std) | Difference | p | p (Holm) | Cliff's δ |
+| Biomarcador | Control (media ± desv.) | Alzheimer (media ± desv.) | Diferencia | p | p (Holm) | δ de Cliff |
 |-----------|----------------------|------------------------|------------|---|----------|-----------|
 | puntos_totales | 13398.29 ± 5155.23 | 14534.48 ± 4913.18 | +8.5% | 0.4223 | 1.0000 | +0.12 |
 | secciones | 112.61 ± 27.05 | 113.16 ± 35.43 | +0.5% | 0.6523 | 1.0000 | +0.07 |
@@ -294,36 +296,36 @@ Two-sided Mann-Whitney U per biomarker, Holm-Bonferroni correction over the 7 bi
 | strahler_max | 3.61 ± 0.50 | 3.77 ± 0.43 | +4.5% | 0.1746 | 1.0000 | +0.16 |
 | ratio_bifurcacion_terminal | 0.90 ± 0.03 | 0.90 ± 0.05 | +0.4% | 0.3904 | 1.0000 | +0.13 |
 
-**No biomarker differs significantly between groups.** All differences in means are between 0% and +8.5%, with small or negligible effect sizes.
+**Ningún biomarcador difiere significativamente entre grupos.** Todas las diferencias de medias están entre el 0 % y el +8,5 %, con tamaños del efecto pequeños o despreciables.
 
-### Classifier (`resultados/evaluacion/informe_evaluacion.json`)
+### Clasificador (`resultados/evaluacion/informe_evaluacion.json`)
 
-| Model | Accuracy | Precision | Recall | F1 | ROC AUC |
+| Modelo | Exactitud | Precisión | Sensibilidad | F1 | AUC ROC |
 |-------|----------|-----------|--------|----|---------|
 | Random Forest | 0.498 ± 0.130 | 0.502 ± 0.160 | 0.489 ± 0.208 | 0.480 ± 0.156 | 0.501 ± 0.151 |
-| Baseline (most frequent) | 0.485 ± 0.019 | 0.092 ± 0.185 | 0.200 ± 0.400 | 0.126 ± 0.253 | 0.500 ± 0.000 |
+| Línea base (clase más frecuente) | 0.485 ± 0.019 | 0.092 ± 0.185 | 0.200 ± 0.400 | 0.126 ± 0.253 | 0.500 ± 0.000 |
 
-**The classifier performs at chance level**: its accuracy and AUC are indistinguishable from the baseline. Feature importances (`importancia_caracteristicas.csv`) are not meaningful for a model that does not discriminate.
+**El clasificador rinde al nivel del azar**: su exactitud y su AUC no se distinguen de las de la línea base. La importancia de las características (`importancia_caracteristicas.csv`) no tiene sentido en un modelo que no discrimina.
 
-### About earlier results
+### Sobre resultados anteriores
 
-Previous versions of this README reported a 79% reduction in bifurcations and a perfect classification accuracy. Those results were an artifact of comparing different cell types and species (rat substantia nigra / mouse dentate gyrus vs. mouse CA1), combined with a bug that computed the Strahler order on the first tree only. They should not be cited.
+Versiones anteriores de este README informaban de una reducción del 79 % en las bifurcaciones y de una exactitud de clasificación perfecta. Esos resultados eran un artefacto de comparar tipos celulares y especies distintos (sustancia negra de rata / giro dentado de ratón frente a CA1 de ratón), combinado con un error que calculaba el orden de Strahler solo en el primer árbol. No deben citarse.
 
-## ⚠️ Limitations
+## ⚠️ Limitaciones
 
-- **Sex is confounded with genotype within each age**: at 6 months all 13 APP/PS1 neurons come from males vs. 9 male / 4 female controls; at 12 months APP/PS1 is 12 female / 6 male vs. 12 male / 6 female controls.
-- **Non-independent samples**: several neurons may come from the same animal or slice, and the NeuroMorpho API provides no animal ID, so the CV does not group by animal.
-- **No diameters**: the reconstructions do not contain real radii, so no diameter-based biomarkers are possible.
-- **Truncated trees**: dendrites are partially cut by the slicing (NeuroMorpho integrity: "Dendrites Moderate").
-- **Excluded data**: 1-month animals were excluded (no amyloid pathology yet), and 5 SWC files were discarded because `morphio` cannot open them.
-- **Unverified study details**: it was not checked in the original article whether controls are littermates or which APP/PS1 line was used.
-- **Length definition**: total length does not include the segment from the soma to the first point of each dendrite (`morphio` behavior).
-- **Low statistical power**: with n=31 per group, absence of significance does not demonstrate absence of effect.
-- **No clinical validation**: mouse model data, for research use only.
+- **El sexo está confundido con el genotipo dentro de cada edad**: a los 6 meses, las 13 neuronas APP/PS1 proceden de machos, frente a 9 machos / 4 hembras en los controles; a los 12 meses, APP/PS1 tiene 12 hembras / 6 machos frente a 12 machos / 6 hembras en los controles.
+- **Muestras no independientes**: varias neuronas pueden proceder del mismo animal o corte, y la API de NeuroMorpho no proporciona un identificador de animal, por lo que la validación cruzada no agrupa por animal.
+- **Sin diámetros**: las reconstrucciones no contienen radios reales, por lo que no es posible calcular biomarcadores basados en el diámetro.
+- **Árboles truncados**: las dendritas están parcialmente cortadas por el seccionado (integridad en NeuroMorpho: "Dendrites Moderate").
+- **Datos excluidos**: se excluyeron los animales de 1 mes (aún sin patología amiloide) y se descartaron 5 archivos SWC porque `morphio` no puede abrirlos.
+- **Detalles del estudio sin verificar**: no se comprobó en el artículo original si los controles son de la misma camada ni qué línea APP/PS1 se utilizó.
+- **Definición de longitud**: la longitud total no incluye el segmento que va del soma al primer punto de cada dendrita (comportamiento de `morphio`).
+- **Baja potencia estadística**: con n=31 por grupo, la ausencia de significación no demuestra la ausencia de efecto.
+- **Sin validación clínica**: datos de un modelo murino, solo para uso en investigación.
 
-## 📝 Citation
+## 📝 Cita
 
-If you use this software in your research, please cite:
+Si utiliza este software en su investigación, cítelo así:
 
 ```bibtex
 @software{BlancoMoreira2026Neuronal,
@@ -335,32 +337,32 @@ If you use this software in your research, please cite:
 }
 ```
 
-## 📄 License
+## 📄 Licencia
 
-This project is under a **custom license**. See the [License](License) file for details.
+Este proyecto se distribuye bajo una **licencia personalizada**. Consulte el archivo [License](License) para más detalles.
 
-**Summary:**
-- ✅ Non-commercial academic/research use allowed
-- ✅ Modification for personal use allowed
-- ❌ Commercial use prohibited
-- ❌ Medical/clinical diagnosis prohibited
-- ❌ Redistribution without permission prohibited
+**Resumen:**
+- ✅ Se permite el uso académico y de investigación no comercial
+- ✅ Se permite la modificación para uso personal
+- ❌ Se prohíbe el uso comercial
+- ❌ Se prohíbe el diagnóstico médico o clínico
+- ❌ Se prohíbe la redistribución sin permiso
 
-For commercial licensing, contact: [carlojbm04@gmail.com]
+Para licencias comerciales, contacte con: [carlojbm04@gmail.com]
 
-## 👤 Author
+## 👤 Autor
 
 **Carlos Javier Blanco Moreira**
 
-- Email: carlojbm04@gmail.com
+- Correo electrónico: carlojbm04@gmail.com
 - GitHub: [@xcaim04](https://github.com/xcaim04)
 
-## 🙏 Acknowledgments
+## 🙏 Agradecimientos
 
-- [NeuroMorpho.org](https://neuromorpho.org) for providing neuronal reconstruction data, and the authors of the Booker archive
-- [BlueBrain/morphio](https://github.com/BlueBrain/morphio) for SWC parsing
-- [scikit-learn](https://scikit-learn.org) for machine learning tools
+- A [NeuroMorpho.org](https://neuromorpho.org) por proporcionar los datos de reconstrucciones neuronales, y a los autores del archivo Booker
+- A [BlueBrain/morphio](https://github.com/BlueBrain/morphio) por la lectura de archivos SWC
+- A [scikit-learn](https://scikit-learn.org) por las herramientas de aprendizaje automático
 
 ---
 
-**Disclaimer:** This software is for research purposes only. Not intended for clinical diagnosis or medical decision-making.
+**Aviso:** Este software es solo para fines de investigación. No está destinado al diagnóstico clínico ni a la toma de decisiones médicas.
