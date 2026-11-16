@@ -1,7 +1,10 @@
+import json
+
 import numpy as np
 import pandas as pd
 import pytest
 
+import predecir
 from predecir import predecir_desde_csv
 from src.classification.classifier import NeuronaClassifier
 
@@ -45,3 +48,22 @@ def test_predecir_desde_csv_columna_faltante(tmp_path, modelo_path):
 
     with pytest.raises(ValueError, match="strahler_max"):
         predecir_desde_csv(str(entrada), modelo_path=modelo_path)
+
+
+def escribir_informe(carpeta, auc_mean, auc_std):
+    informe = {"resultados": {"RandomForest": {
+        "auc": {"mean": auc_mean, "std": auc_std}, "accuracy": {"mean": 0.498, "std": 0.130},
+    }}}
+    (carpeta / "informe_evaluacion.json").write_text(json.dumps(informe), encoding="utf-8")
+
+
+def test_aviso_azar(tmp_path, monkeypatch):
+    monkeypatch.setattr(predecir, "RESULTADOS_EVALUACION", str(tmp_path))
+    assert predecir.aviso_azar() is None
+
+    escribir_informe(tmp_path, 0.501, 0.151)
+    aviso = predecir.aviso_azar()
+    assert "AUC 0.50 ± 0.15" in aviso and "accuracy 0.50 ± 0.13" in aviso
+
+    escribir_informe(tmp_path, 0.9, 0.05)
+    assert predecir.aviso_azar() is None

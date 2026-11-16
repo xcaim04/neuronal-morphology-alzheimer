@@ -1,11 +1,27 @@
+import json
 import os
 import sys
 import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from config import MODELO_PATH
+from config import MODELO_PATH, RESULTADOS_EVALUACION
 from src.classification.classifier import NeuronaClassifier
+
+def aviso_azar():
+    """Texto de aviso si el modelo no supera el azar según el informe de evaluación; None si lo supera o no hay informe."""
+    ruta = os.path.join(RESULTADOS_EVALUACION, "informe_evaluacion.json")
+    if not os.path.exists(ruta):
+        return None
+    with open(ruta, encoding="utf-8") as f:
+        metricas = json.load(f)["resultados"]["RandomForest"]
+    auc, acc = metricas["auc"], metricas["accuracy"]
+    if auc["mean"] - auc["std"] > 0.5:
+        return None
+    return (
+        f"El modelo no supera el azar (AUC {auc['mean']:.2f} ± {auc['std']:.2f}, "
+        f"accuracy {acc['mean']:.2f} ± {acc['std']:.2f} en validación cruzada): sus predicciones no tienen valor."
+    )
 
 def predecir_desde_csv(ruta_entrada, ruta_salida=None, modelo_path=MODELO_PATH):
     """
@@ -80,6 +96,10 @@ if __name__ == "__main__":
         df_resultado = predecir_desde_csv(args.entrada, args.salida, args.modelo)
     except (FileNotFoundError, ValueError) as e:
         sys.exit(f"Error: {e}")
+
+    aviso = aviso_azar()
+    if aviso:
+        print(f"AVISO: {aviso}", file=sys.stderr)
 
     print("\nResumen de predicciones:")
     print(df_resultado["prediccion"].value_counts())

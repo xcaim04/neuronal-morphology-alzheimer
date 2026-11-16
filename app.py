@@ -5,7 +5,7 @@ import pandas as pd
 import streamlit as st
 
 from config import BIOMARCADORES, RESULTADOS_COMPARATIVA, RESULTADOS_EVALUACION
-from predecir import predecir_desde_dataframe
+from predecir import aviso_azar
 from src.processing.storage import BiomarkerStore
 
 st.set_page_config(page_title="Morfología neuronal", layout="wide")
@@ -40,7 +40,7 @@ for grupo, resumen in datos["summaries"].items():
     c3.metric("Bifurcaciones medias", f"{resumen['mean_branches']:.1f}")
     c4.metric("Terminales medios", f"{resumen['mean_terminals']:.1f}")
 
-tab_bio, tab_comp, tab_modelo, tab_pred = st.tabs(["Biomarcadores", "Comparativa", "Modelo", "Predecir"])
+tab_bio, tab_comp, tab_modelo = st.tabs(["Biomarcadores", "Comparativa", "Modelo"])
 
 with tab_bio:
     if not datos["records"]:
@@ -84,6 +84,9 @@ with tab_modelo:
     if not datos["training_runs"]:
         st.info("No hay entrenamientos registrados: ejecuta `uv run python train.py`.")
     else:
+        aviso = aviso_azar()
+        if aviso:
+            st.warning(aviso)
         ultimo = datos["training_runs"][0]
         st.caption(
             f"{ultimo['model_name']} · {ultimo['created_at']} · "
@@ -116,20 +119,3 @@ with tab_modelo:
             ruta = os.path.join(RESULTADOS_EVALUACION, nombre)
             if os.path.exists(ruta):
                 col.image(ruta)
-
-with tab_pred:
-    archivo = st.file_uploader("CSV con biomarcadores (opcional)", type="csv")
-    if archivo is not None:
-        entrada = pd.read_csv(archivo)
-        st.dataframe(entrada, hide_index=True)
-    else:
-        entrada = st.data_editor(
-            pd.DataFrame([{"longitud_total_um": 3500.0, "bifurcaciones": 50, "terminales": 55, "strahler_max": 3}]),
-            num_rows="dynamic",
-            hide_index=True,
-        )
-    if st.button("Predecir"):
-        try:
-            st.dataframe(predecir_desde_dataframe(entrada.copy()), hide_index=True)
-        except (FileNotFoundError, ValueError) as e:
-            st.error(str(e))

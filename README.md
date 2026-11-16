@@ -44,7 +44,7 @@ It is a research/teaching tool. With the current dataset it is an analysis pipel
 | **Statistical Comparison** | Mann-Whitney U, Holm-Bonferroni correction, Cliff's delta, auto-generated interpretation and limitations |
 | **ML Evaluation** | Random Forest, repeated stratified 5-fold CV (10 repeats), `DummyClassifier` baseline, out-of-fold confusion matrix and ROC |
 | **Persistence** | Biomarkers and training runs stored in SQLite (`data/neurona.sqlite3`) |
-| **Dashboard** | Streamlit app with Biomarcadores / Comparativa / Modelo / Predecir tabs |
+| **Dashboard** | Streamlit app with Biomarcadores / Comparativa / Modelo tabs (prediction is CLI-only) |
 | **Tests** | `pytest` suite under `tests/` |
 
 ## 📁 Project Structure
@@ -196,7 +196,7 @@ Reads the SQLite database and the files in `resultados/`; run `main.py` and `tra
 
 ### 4. Predict new neurons from CSV
 
-> ⚠️ With the current model, predictions have **no value**: cross-validated performance is at chance level (see [Results](#-results)).
+> ⚠️ With the current model, predictions have **no value**: cross-validated performance is at chance level (see [Results](#-results)). Prediction is therefore not offered in the dashboard; `predecir.py` prints a warning to stderr while the evaluation report shows the model at chance level (mean CV AUC minus its std ≤ 0.5).
 
 Create a CSV file with the following columns:
 

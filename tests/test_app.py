@@ -1,6 +1,8 @@
 from streamlit.testing.v1 import AppTest
 
+import predecir
 from src.processing.storage import BiomarkerStore
+from tests.test_prediccion import escribir_informe
 
 
 def registro(archivo, grupo, longitud):
@@ -14,6 +16,8 @@ def registro(archivo, grupo, longitud):
 def arrancar(monkeypatch, ruta):
     # La app usa BiomarkerStore() sin argumentos: redirigimos el valor por defecto.
     monkeypatch.setattr(BiomarkerStore.__init__, "__defaults__", (ruta,))
+    # Aislar el aviso del modelo del informe real de resultados/.
+    monkeypatch.setattr(predecir, "RESULTADOS_EVALUACION", str(ruta.parent))
     return AppTest.from_file("../app.py", default_timeout=30).run()
 
 
@@ -37,9 +41,11 @@ def test_bd_poblada_muestra_tarjetas(monkeypatch, tmp_path):
         features=["longitud_total_um", "bifurcaciones", "terminales", "strahler_max"],
     )
 
+    escribir_informe(tmp_path, 0.501, 0.151)
+
     app = arrancar(monkeypatch, ruta)
     assert not app.exception
-    assert not app.warning
+    assert [w.value for w in app.warning] == [predecir.aviso_azar()]
     etiquetas = [m.label for m in app.metric]
     assert etiquetas.count("Neuronas") == 2
     assert "accuracy (± 0.100)" in etiquetas
