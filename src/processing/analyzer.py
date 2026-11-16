@@ -25,7 +25,7 @@ class BiomarkerAnalyzer:
         """
         contador = 0
         
-        for archivo in os.listdir(carpeta):
+        for archivo in sorted(os.listdir(carpeta)):
             if archivo.endswith(".swc"):
                 ruta = os.path.join(carpeta, archivo)
                 print(f"  Procesando: {archivo}")
@@ -39,18 +39,6 @@ class BiomarkerAnalyzer:
                     print(f"    OK - {biomarcadores['puntos_totales']} puntos, {biomarcadores['bifurcaciones']} bifurcaciones")
         
         return contador
-    
-    def procesar_sanas(self, carpeta_sanas):
-        """
-        Procesa solo neuronas sanas.
-        
-        Args:
-            carpeta_sanas: ruta a la carpeta de neuronas sanas
-        
-        Returns:
-            int: numero de neuronas procesadas
-        """
-        return self.procesar_carpeta(carpeta_sanas, "sana")
     
     def generar_dataframe(self):
         """Genera DataFrame con todos los datos procesados."""
@@ -70,23 +58,3 @@ class BiomarkerAnalyzer:
             self.df.to_csv(ruta_salida, index=False)
             print(f"Dataset guardado: {ruta_salida}")
     
-    def obtener_resumen(self):
-        """Obtiene un resumen estadistico de los datos."""
-        if self.df is None:
-            return None
-        
-        resumen = {
-            'total': len(self.df),
-            'sanas': len(self.df[self.df['grupo'] == 'sana']),
-            'alzheimer': len(self.df[self.df['grupo'] == 'alzheimer'])
-        }
-        
-        return resumen
-    
-    def obtener_estadisticas_por_grupo(self):
-        """Obtiene estadisticas agrupadas por grupo."""
-        if self.df is None:
-            return None
-        
-        columnas = ["longitud_total_um", "bifurcaciones", "terminales", "strahler_max"]
-        return self.df.groupby("grupo")[columnas].agg(['mean', 'std', 'min', 'max'])

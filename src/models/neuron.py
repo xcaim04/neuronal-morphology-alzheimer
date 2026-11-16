@@ -1,9 +1,12 @@
 # src/models/neuron.py
+import os
 import morphio
-import warnings
 from ..utils.geometry import calcular_longitud_seccion
 
-warnings.filterwarnings("ignore")
+# morphio emite "Three Point Soma" en casi todos los SWC de NeuroMorpho; es ruido, no un error de datos.
+morphio.set_ignored_warning(morphio.Warning.soma_non_conform, True)
+
+TIPOS_DENDRITA = (morphio.SectionType.basal_dendrite, morphio.SectionType.apical_dendrite)
 
 class Neurona:
     """
@@ -19,7 +22,7 @@ class Neurona:
             grupo: 'sana' o 'alzheimer'
         """
         self.ruta_archivo = ruta_archivo
-        self.nombre = ruta_archivo.split('/')[-1]
+        self.nombre = os.path.basename(ruta_archivo)
         self.grupo = grupo
         self._cargar_morfologia()
     
@@ -38,7 +41,7 @@ class Neurona:
         Calcula el orden de Strahler recursivamente.
         
         Args:
-            section: seccion actual (None para comenzar desde raiz)
+            section: seccion actual (None para el maximo sobre todas las raices dendriticas)
         
         Returns:
             int: orden de Strahler
@@ -47,9 +50,8 @@ class Neurona:
             return 0
         
         if section is None:
-            if not self.morphology.sections:
-                return 0
-            section = self.morphology.sections[0]
+            raices = [s for s in self.morphology.root_sections if s.type in TIPOS_DENDRITA]
+            return max((self.calcular_strahler(s) for s in raices), default=0)
         
         if not section.children:
             return 1
@@ -64,7 +66,7 @@ class Neurona:
     
     def extraer_biomarcadores(self):
         """
-        Extrae todos los biomarcadores de la neurona.
+        Extrae los biomarcadores dendriticos (basales y apicales) de la neurona.
         
         Returns:
             dict: diccionario con los biomarcadores
@@ -75,8 +77,14 @@ class Neurona:
         bifurcaciones = 0
         terminales = 0
         longitud_total = 0.0
+        puntos = 0
+        secciones = 0
         
-        for section in self.morphology.sections:
+        for section in self.morphology.iter():
+            if section.type not in TIPOS_DENDRITA:
+                continue
+            secciones += 1
+            puntos += len(section.points)
             longitud_total += calcular_longitud_seccion(section)
             if len(section.children) >= 2:
                 bifurcaciones += 1
@@ -88,8 +96,8 @@ class Neurona:
         return {
             "archivo": self.nombre,
             "grupo": self.grupo,
-            "puntos_totales": len(self.morphology.points),
-            "secciones": len(self.morphology.sections),
+            "puntos_totales": puntos,
+            "secciones": secciones,
             "longitud_total_um": round(longitud_total, 2),
             "bifurcaciones": bifurcaciones,
             "terminales": terminales,
@@ -98,14 +106,3 @@ class Neurona:
                 bifurcaciones / terminales if terminales > 0 else 0, 3
             )
         }
-    
-    def obtener_tipos_seccion(self):
-        """Obtiene los tipos de seccion presentes."""
-        if not self.cargada:
-            return set()
-        
-        tipos = set()
-        for section in self.morphology.sections:
-            tipos.add(str(section.type))
-        
-        return tipos
