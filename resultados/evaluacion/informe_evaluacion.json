@@ -1,0 +1,80 @@
+{
+    "fecha": "2026-11-15 12:12:12",
+    "resultados": {
+        "RandomForest": {
+            "accuracy": {
+                "mean": 0.49820512820512824,
+                "std": 0.13034143197344766
+            },
+            "precision": {
+                "mean": 0.501511544011544,
+                "std": 0.1595759825691131
+            },
+            "recall": {
+                "mean": 0.48904761904761906,
+                "std": 0.20812356786566436
+            },
+            "f1": {
+                "mean": 0.4800572466748937,
+                "std": 0.15600796578559414
+            },
+            "auc": {
+                "mean": 0.5013492063492064,
+                "std": 0.15051846234993388
+            }
+        },
+        "LineaBase": {
+            "accuracy": {
+                "mean": 0.48461538461538467,
+                "std": 0.01884222879063982
+            },
+            "precision": {
+                "mean": 0.0923076923076923,
+                "std": 0.18461538461538463
+            },
+            "recall": {
+                "mean": 0.2,
+                "std": 0.4
+            },
+            "f1": {
+                "mean": 0.12631578947368421,
+                "std": 0.2526315789473685
+            },
+            "auc": {
+                "mean": 0.5,
+                "std": 0.0
+            }
+        }
+    },
+    "n_por_clase": {
+        "sana": 31,
+        "alzheimer": 31
+    },
+    "hiperparametros": {
+        "bootstrap": true,
+        "ccp_alpha": 0.0,
+        "class_weight": null,
+        "criterion": "gini",
+        "max_depth": 4,
+        "max_features": "sqrt",
+        "max_leaf_nodes": null,
+        "max_samples": null,
+        "min_impurity_decrease": 0.0,
+        "min_samples_leaf": 1,
+        "min_samples_split": 2,
+        "min_weight_fraction_leaf": 0.0,
+        "monotonic_cst": null,
+        "n_estimators": 100,
+        "n_jobs": null,
+        "oob_score": false,
+        "random_state": 42,
+        "verbose": 0,
+        "warm_start": false
+    },
+    "features": [
+        "longitud_total_um",
+        "bifurcaciones",
+        "terminales",
+        "strahler_max"
+    ]
+}
