@@ -194,6 +194,15 @@ uv run streamlit run app.py
 
 Reads the SQLite database and the files in `resultados/`; run `main.py` and `train.py` first.
 
+![Biomarcadores tab: per-group summary metrics, box plot of the selected biomarker by group, scatter of bifurcations vs total length, and the per-neuron table](docs/img/panel_biomarcadores.png)
+*Biomarcadores: per-group summary, distribution of the selected biomarker and the per-neuron table.*
+
+![Comparativa tab: group comparison report with Mann-Whitney U tests, Holm-adjusted p-values and Cliff's delta for each metric](docs/img/panel_comparativa.png)
+*Comparativa: the group comparison report (Mann-Whitney U, Holm correction, Cliff's delta).*
+
+![Modelo tab: warning that the model does not beat chance, cross-validated metrics vs baseline, feature importances, confusion matrix and ROC curve](docs/img/panel_modelo.png)
+*Modelo: cross-validated metrics against the baseline, with a warning when the model is at chance level.*
+
 ### 4. Predict new neurons from CSV
 
 > ⚠️ With the current model, predictions have **no value**: cross-validated performance is at chance level (see [Results](#-results)). Prediction is therefore not offered in the dashboard; `predecir.py` prints a warning to stderr while the evaluation report shows the model at chance level (mean CV AUC minus its std ≤ 0.5).
