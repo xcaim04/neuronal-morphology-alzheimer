@@ -5,11 +5,23 @@ description = "Pipeline de analisis morfologico neuronal y clasificacion sana vs
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "altair>=6.3.0",
     "joblib>=1.4",
     "matplotlib>=3.10.9",
     "morphio>=3.4.2",
     "numpy>=1.26",
     "pandas>=2.0.2",
     "scikit-learn>=1.5",
+    "scipy>=1.18.1",
     "seaborn>=0.13.2",
+    "streamlit>=1.67.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

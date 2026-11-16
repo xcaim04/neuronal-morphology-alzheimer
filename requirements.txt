@@ -1,10 +1,15 @@
 # Requerimientos del proyecto de morfología neuronal
 # Python >= 3.12
+# Debe coincidir con [project.dependencies] de pyproject.toml.
+# Desarrollo (tests): pytest>=9.2.0
 
+altair>=6.3.0
+joblib>=1.4
+matplotlib>=3.10.9
+morphio>=3.4.2
 numpy>=1.26
 pandas>=2.0.2
-matplotlib>=3.10.9
-seaborn>=0.13.2
-morphio>=3.4.2
 scikit-learn>=1.5
-joblib>=1.4
+scipy>=1.18.1
+seaborn>=0.13.2
+streamlit>=1.67.0
