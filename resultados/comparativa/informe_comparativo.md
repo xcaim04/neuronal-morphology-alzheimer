@@ -1,36 +1,32 @@
 # Informe Comparativo: Sanas vs Alzheimer
 
-**Fecha del informe:** 2026-05-07 10:29:19
+**Fecha del informe:** 2026-11-15 20:27:58
 
 ## Resumen General
 
 | Indicador | Sanas | Alzheimer |
 |-----------|-------|-----------|
-| Total de neuronas | 7 | 13 |
+| Total de neuronas | 31 | 31 |
 
 ## Comparacion de Metricas
 
-| Metrica | Sana (media ± std) | Alzheimer (media ± std) | Diferencia (%) |
-|---------|-------------------|------------------------|----------------|
-| longitud_total_um | 3519.71 ± 1091.46 | 2391.34 ± 763.27 | -32.1% |
-| bifurcaciones | 52.57 ± 16.88 | 11.00 ± 4.71 | -79.1% |
-| terminales | 58.43 ± 16.34 | 16.15 ± 5.51 | -72.4% |
-| strahler_max | 2.14 ± 0.69 | 2.38 ± 0.96 | +11.3% |
+Test de Mann-Whitney U bilateral por metrica. P-valores ajustados por Holm-Bonferroni sobre las 7 metricas (alfa = 0.05). Tamano de efecto: delta de Cliff (rank-biserial), positivo si Alzheimer tiende a valores mayores; |delta| >= 0.147 pequeno, >= 0.33 mediano, >= 0.474 grande. Diferencia (%) = (alzheimer - sana) / sana.
+
+| Metrica | Sana (media ± std) | Alzheimer (media ± std) | Diferencia (%) | U | p | p (Holm) | Delta de Cliff |
+|---------|-------------------|------------------------|----------------|---|---|----------|----------------|
+| puntos_totales | 13398.29 ± 5155.23 | 14534.48 ± 4913.18 | +8.5% | 538.0 | 0.4223 | 1.0000 | +0.12 |
+| secciones | 112.61 ± 27.05 | 113.16 ± 35.43 | +0.5% | 513.0 | 0.6523 | 1.0000 | +0.07 |
+| longitud_total_um | 6345.98 ± 1651.98 | 6869.00 ± 1977.02 | +8.2% | 570.0 | 0.2102 | 1.0000 | +0.19 |
+| bifurcaciones | 53.52 ± 13.60 | 54.06 ± 17.51 | +1.0% | 519.5 | 0.5876 | 1.0000 | +0.08 |
+| terminales | 59.10 ± 13.48 | 59.10 ± 17.94 | +0.0% | 509.5 | 0.6880 | 1.0000 | +0.06 |
+| strahler_max | 3.61 ± 0.50 | 3.77 ± 0.43 | +4.5% | 558.0 | 0.1746 | 1.0000 | +0.16 |
+| ratio_bifurcacion_terminal | 0.90 ± 0.03 | 0.90 ± 0.05 | +0.4% | 542.0 | 0.3904 | 1.0000 | +0.13 |
 
 ## Interpretacion
 
-### Hallazgos Principales
-
-1. Las neuronas con Alzheimer muestran una reduccion en:
-   - Longitud dendritica total
-   - Numero de bifurcaciones
-   - Numero de terminales
-
-2. Estas diferencias son consistentes con la literatura cientifica
-   que describe la degeneracion de la arborizacion dendritica en Alzheimer.
+Ninguna metrica difiere significativamente entre grupos tras la correccion de Holm (alfa = 0.05).
 
 ### Limitaciones
 
-- Posibles diferencias de edad entre los grupos
-- Algunos archivos pueden carecer de informacion de diametro
-- Diferencia potencial en regiones cerebrales entre grupos
+- Muestras pequenas (sanas n=31, alzheimer n=31): potencia estadistica limitada; la ausencia de significacion no implica ausencia de efecto.
+- Segun el manifest, los grupos coinciden en especie, region, tipo_celular, edad.

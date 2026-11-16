@@ -43,9 +43,6 @@
 - Document biomarker definitions
 
 ## 2026-09-23
-- Integrate final analysis notebook workflow
-
-## 2026-09-23
 - Refine training and report generation
 
 ## 2026-10-08
@@ -65,3 +62,16 @@
 
 ## 2026-11-03
 - Project complete and documented
+
+## 2026-11-15
+- Replace the dataset: 31 control (C57BL/6J) vs 31 APP/PS1 mouse CA1 pyramidal neurons, 6 and 12 months, all from the NeuroMorpho Booker archive (PMID 41651661). Remove the 20 previous files (rat SNc, 5xFAD dentate gyrus, controls from another lab) because the groups were not comparable
+- Add `dataset/manifest.csv` with per-file provenance and `scripts/descargar_dataset.py` to reproduce the dataset
+- Fix Strahler order: computed over all dendritic roots instead of only the first tree
+- Fix biomarkers: count dendrites only (SWC types 3 and 4), not axons
+- Make the output deterministic
+- Evaluation: repeated stratified CV (5 folds x 10 repeats) with a `DummyClassifier` baseline, out-of-fold confusion matrix and ROC, `informe_evaluacion.json`; Random Forest only
+- Comparative report: Mann-Whitney U, Holm correction, Cliff's delta, interpretation and limitations generated from the data and the manifest
+- Store biomarkers and training runs in SQLite (`data/neurona.sqlite3`)
+- Add Streamlit dashboard (`app.py`) and pytest suite
+- Result: no biomarker differs significantly between groups (all Holm-adjusted p = 1.0) and the classifier performs at chance level (CV accuracy 0.50 ± 0.13, AUC 0.50 ± 0.15). The previous results (79% fewer bifurcations, accuracy 1.0) were an artifact of non-comparable groups and the Strahler bug
+- Update README and requirements.txt

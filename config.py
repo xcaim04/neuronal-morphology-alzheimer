@@ -26,3 +26,8 @@ COLORES = {
     "alzheimer": "red"
 }
 DPI = 150
+
+RESULTADOS_EVALUACION = os.path.join(RESULTADOS_DIR, "evaluacion")
+MODELOS_DIR = os.path.join(BASE_DIR, "modelos")
+MODELO_PATH = os.path.join(MODELOS_DIR, "clasificador_neurona.pkl")
+MANIFEST_PATH = os.path.join(DATASET_DIR, "manifest.csv")

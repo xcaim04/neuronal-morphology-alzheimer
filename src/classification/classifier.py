@@ -1,9 +1,5 @@
-import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC
-from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
 import joblib
 import os
 
@@ -12,48 +8,22 @@ class NeuronaClassifier:
     Clasificador de neuronas (Sana vs Alzheimer) usando Random Forest.
     """
     
-    def __init__(self, modelo_tipo="random_forest", random_state=42):
+    def __init__(self, random_state=42):
         """
         Inicializa el clasificador.
         
         Args:
-            modelo_tipo: "random_forest", "svm", o "logistic"
             random_state: semilla para reproducibilidad
         """
-        self.modelo_tipo = modelo_tipo
         self.random_state = random_state
-        self.modelo = None
-        self.scaler = None
         self.features = ["longitud_total_um", "bifurcaciones", "terminales", "strahler_max"]
-        
-        self._crear_modelo()
-    
-    def _crear_modelo(self):
-        """Crea el modelo segun el tipo seleccionado."""
-        if self.modelo_tipo == "random_forest":
-            self.modelo = RandomForestClassifier(
-                n_estimators=100,
-                max_depth=4,
-                min_samples_split=2,
-                min_samples_leaf=1,
-                random_state=self.random_state
-            )
-        elif self.modelo_tipo == "svm":
-            self.modelo = SVC(
-                kernel="rbf",
-                C=1.0,
-                gamma="scale",
-                probability=True,
-                random_state=self.random_state
-            )
-        elif self.modelo_tipo == "logistic":
-            self.modelo = LogisticRegression(
-                C=1.0,
-                max_iter=1000,
-                random_state=self.random_state
-            )
-        else:
-            raise ValueError(f"Modelo desconocido: {self.modelo_tipo}")
+        self.modelo = RandomForestClassifier(
+            n_estimators=100,
+            max_depth=4,
+            min_samples_split=2,
+            min_samples_leaf=1,
+            random_state=random_state
+        )
     
     def preparar_datos(self, df_sanas, df_enfermas):
         """
@@ -83,87 +53,24 @@ class NeuronaClassifier:
         
         return X, y, df_combinado
     
-    def entrenar(self, X_train, y_train, escalar=False):
-        """
-        Entrena el modelo.
-        
-        Args:
-            X_train: caracteristicas de entrenamiento
-            y_train: etiquetas de entrenamiento
-            escalar: si se debe escalar (necesario para SVM y Logistic)
-        """
-        if escalar:
-            self.scaler = StandardScaler()
-            X_train = self.scaler.fit_transform(X_train)
-        
+    def entrenar(self, X_train, y_train):
+        """Entrena el modelo."""
         self.modelo.fit(X_train, y_train)
-        print(f"Modelo {self.modelo_tipo} entrenado correctamente.")
+        print("Modelo RandomForest entrenado correctamente.")
     
     def predecir(self, X):
-        """
-        Predice la clase de una o varias neuronas.
-        
-        Args:
-            X: caracteristicas de entrada
-        
-        Returns:
-            predicciones (0=sana, 1=alzheimer)
-        """
-        if self.scaler is not None:
-            X = self.scaler.transform(X)
-        
+        """Predice la clase (0=sana, 1=alzheimer) de una o varias neuronas."""
         return self.modelo.predict(X)
     
     def predecir_proba(self, X):
-        """
-        Predice la probabilidad de pertenecer a cada clase.
-        
-        Args:
-            X: caracteristicas de entrada
-        
-        Returns:
-            probabilidades [prob_sana, prob_alzheimer]
-        """
-        if self.scaler is not None:
-            X = self.scaler.transform(X)
-        
+        """Devuelve las probabilidades [prob_sana, prob_alzheimer] de cada neurona."""
         return self.modelo.predict_proba(X)
-    
-    def predecir_neurona(self, longitud, bifurcaciones, terminales, strahler):
-        """
-        Predice una neurona individual a partir de sus biomarcadores.
-        
-        Args:
-            longitud: longitud total en micras
-            bifurcaciones: numero de bifurcaciones
-            terminales: numero de terminales
-            strahler: orden de Strahler maximo
-        
-        Returns:
-            dict con prediccion y probabilidades
-        """
-        X = np.array([[longitud, bifurcaciones, terminales, strahler]])
-        
-        if self.scaler is not None:
-            X = self.scaler.transform(X)
-        
-        pred = self.modelo.predict(X)[0]
-        proba = self.modelo.predict_proba(X)[0]
-        
-        return {
-            "clase": "Alzheimer" if pred == 1 else "Sana",
-            "probabilidad_sana": proba[0],
-            "probabilidad_alzheimer": proba[1],
-            "confianza": max(proba) * 100
-        }
     
     def guardar(self, ruta):
         """Guarda el modelo entrenado en disco."""
         os.makedirs(os.path.dirname(ruta), exist_ok=True)
         joblib.dump({
             "modelo": self.modelo,
-            "scaler": self.scaler,
-            "modelo_tipo": self.modelo_tipo,
             "features": self.features
         }, ruta)
         print(f"Modelo guardado en: {ruta}")
@@ -171,9 +78,8 @@ class NeuronaClassifier:
     def cargar(self, ruta):
         """Carga un modelo previamente entrenado."""
         datos = joblib.load(ruta)
+        # Los .pkl antiguos traen ademas "scaler" (siempre None) y "modelo_tipo"; se ignoran.
         self.modelo = datos["modelo"]
-        self.scaler = datos["scaler"]
-        self.modelo_tipo = datos["modelo_tipo"]
         self.features = datos["features"]
         print(f"Modelo cargado desde: {ruta}")
     

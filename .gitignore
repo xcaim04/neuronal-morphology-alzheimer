@@ -13,3 +13,6 @@ wheels/
 AGENT_CONTEXT.md
 .agent_context*
 
+
+# Base de datos SQLite local
+data/
